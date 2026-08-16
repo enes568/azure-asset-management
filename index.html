@@ -29,7 +29,7 @@
 
     <script>
         async function loadAssets() {
-            // ERSETZE DIESE URL MIT DEINER AZURE FUNCTION URL:
+          
             const apiUrl = 'https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets';
             
             try {
@@ -51,7 +51,9 @@
                 alert('Fehler beim Laden der Daten: ' + err);
             }
         }
+
+        
+        loadAssets();
     </script>
-    <script src="script.js"></script>
 </body>
 </html>
