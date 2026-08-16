@@ -36,7 +36,7 @@ Die Verwaltung und Bereitstellung der Azure-Ressourcen sowie der Test der API er
 Connect-AzAccount
 
 # 2. Azure Function App & Static Web App Status prüfen
-Get-AzResource -ResourceGroupName "dein-ressourcen-gruppen-name" | Select-Object Name, ResourceType, Location
+Get-AzResource -ResourceGroupName "rg-azure-demo-dev" | Select-Object Name, ResourceType, Location
 
 # 3. REST-API Endpunkt via PowerShell testen
 $apiUrl = "https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets"
