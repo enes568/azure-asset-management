@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Cloud Asset Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f6f9; }
+        h1 { color: #0078d4; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #0078d4; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>Azure Asset Manager</h1>
+    <button onclick="loadAssets()">Daten laden</button>
+    <table id="assetTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Typ</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        async function loadAssets() {
+            // ERSETZE DIESE URL MIT DEINER AZURE FUNCTION URL:
+            const apiUrl = 'https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets';
+            
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                const tbody = document.querySelector('#assetTable tbody');
+                tbody.innerHTML = '';
+
+                data.forEach(asset => {
+                    const row = `<tr>
+                        <td>${asset.id || asset.ID || '-'}</td>
+                        <td>${asset.name || asset.Name || '-'}</td>
+                        <td>${asset.type || asset.Type || '-'}</td>
+                        <td>${asset.status || asset.Status || '-'}</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+            } catch (err) {
+                alert('Fehler beim Laden der Daten: ' + err);
+            }
+        }
+    </script>
+</body>
+</html>
