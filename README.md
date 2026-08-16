@@ -39,5 +39,5 @@ Connect-AzAccount
 Get-AzResource -ResourceGroupName "dein-ressourcen-gruppen-name" | Select-Object Name, ResourceType, Location
 
 # 3. REST-API Endpunkt via PowerShell testen
-$apiUrl = "[https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets](https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets)"
+$apiUrl = "https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets"
 Invoke-RestMethod -Uri $apiUrl -Method Get
