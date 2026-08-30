@@ -1,3 +1,6 @@
+Hier ist der verfeinerte Code ohne die Kommentare:
+
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -10,11 +13,15 @@
         th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
         th { background-color: #0078d4; color: white; }
         tr:nth-child(even) { background-color: #f9f9f9; }
+        #loading { margin-top: 15px; font-weight: bold; color: #0078d4; display: none; }
     </style>
 </head>
 <body>
     <h1>Azure Asset Manager</h1>
-    <button onclick="loadAssets()">Daten laden</button>
+    <button id="loadBtn" onclick="loadAssets()">Daten laden</button>
+    
+    <div id="loading">⚡ Verbinde mit Azure Serverless Backend... Bitte einen Moment Geduld.</div>
+
     <table id="assetTable">
         <thead>
             <tr>
@@ -29,14 +36,18 @@
 
     <script>
         async function loadAssets() {
-          
             const apiUrl = 'https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets';
+            const loadingDiv = document.getElementById('loading');
+            const loadBtn = document.getElementById('loadBtn');
+            const tbody = document.querySelector('#assetTable tbody');
+
+            loadingDiv.style.display = 'block';
+            loadBtn.disabled = true;
+            tbody.innerHTML = '';
             
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
-                const tbody = document.querySelector('#assetTable tbody');
-                tbody.innerHTML = '';
 
                 data.forEach(asset => {
                     const row = `<tr>
@@ -49,11 +60,15 @@
                 });
             } catch (err) {
                 alert('Fehler beim Laden der Daten: ' + err);
+            } finally {
+                loadingDiv.style.display = 'none';
+                loadBtn.disabled = false;
             }
         }
 
-        
         loadAssets();
     </script>
 </body>
 </html>
+
+```
