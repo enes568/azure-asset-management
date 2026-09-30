@@ -1,43 +1,34 @@
-# ☁️ Azure Cloud Asset Dashboard
+# ☁️ Azure Cloud Asset Management & Dashboard
 
-Eine moderne, serverlose Cloud-Asset-Management-Anwendung auf Basis von **Microsoft Azure** und **GitHub Actions**. Das Dashboard ruft System-Ressourcen über eine REST-API ab und stellt diese dynamisch in einer Weboberfläche dar.
+[![Azure Static Web Apps](https://img.shields.io/badge/Azure-Static_Web_Apps-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com/)
+[![Azure Functions](https://img.shields.io/badge/Azure-Functions_Serverless-0078D4?style=for-the-badge&logo=azurefunctions&logoColor=white)](https://azure.microsoft.com/)
+[![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
 
----
+Ein serverloses Cloud Asset Management Dashboard zur zentralen Erfassung und Visualisierung von IT-Ressourcen. Das Projekt demonstriert eine moderne Cloud-Infrastruktur auf Basis von **Microsoft Azure**, **PowerShell-Automatisierung** und einer **CI/CD-Pipeline**.
 
-## 🛠️ Architektur & Technologien
-
-* **Frontend:** HTML5, CSS3, Modern JavaScript (Fetch API)
-* **Backend:** Azure Functions (Serverless Node.js REST API)
-* **Hosting:** Azure Static Web Apps
-* **CI/CD Pipeline:** GitHub Actions (Automatisches Build & Deployment bei Code-Pushes)
+🚀 **Live-Demo:** https://gray-stone-09ea0b410.7.azurestaticapps.net
 
 ---
 
-## 🚀 Live Demo
+## 🏗️ Architektur & Komponenten
 
-Die Anwendung ist live erreichbar unter:  
-👉 **[Azure Asset Manager Dashboard](https://gray-stone-09ea0b410.7.azurestaticapps.net)**
+1. **Frontend:** Gehostet über **Azure Static Web Apps** mit Azure Dark Theme, Live-Filtern und dynamischen Statusanzeigen.
+2. **Backend API:** **Azure Functions (Serverless)** als RESTful API Endpoint (`/api/GetAssets`).
+3. **Automatisierung:** PowerShell-Skripte im Ordner `/scripts` zur direkten API-Abfrage der Cloud-Ressourcen.
+4. **CI/CD:** **GitHub Actions** Workflow für automatisierte Builds und Deploys bei jedem `git push`.
 
 ---
 
-## 📋 Features
+## 🛠️ Verwendete Technologien
 
-* **Serverless Backend:** Dynamische Bereitstellung von Cloud-Ressourcendaten über Azure Functions.
-* **CORS-Sicherheit:** Sichere Kommunikation zwischen Frontend und Backend-API.
-* **Automated Deployment:** Vollautomatische CI/CD-Pipeline via GitHub Actions bei Änderungen im `main`-Branch.
+- **Cloud & Identity:** Microsoft Azure (Static Web Apps, Functions, Resource Groups, Entra ID / RBAC-Konzepte)
+- **Programming & Automation:** JavaScript (ES6+ async/await), HTML5/CSS3, PowerShell
+- **DevOps & Infrastructure:** GitHub Actions, Git
+- **Zertifizierungen:** Microsoft Certified: Azure Fundamentals (AZ-900) | AZ-104 in Vorbereitung
 
+---
 
-## ⚡ Azure Infrastructure & Deployment (PowerShell)
+## 👤 Autor
 
-Die Verwaltung und Bereitstellung der Azure-Ressourcen sowie der Test der API erfolgt über die **Azure PowerShell CLI**:
-
-```powershell
-# 1. Verbindung zu Azure herstellen
-Connect-AzAccount
-
-# 2. Azure Function App & Static Web App Status prüfen
-Get-AzResource -ResourceGroupName "rg-azure-demo-dev" | Select-Object Name, ResourceType, Location
-
-# 3. REST-API Endpunkt via PowerShell testen
-$apiUrl = "https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets"
-Invoke-RestMethod -Uri $apiUrl -Method Get
+**Enes Can**  
+*IT-Systemtechniker & Cloud Administrator (AZ-900 certified)*
