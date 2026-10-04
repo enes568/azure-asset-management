@@ -62,7 +62,4 @@ graph TD
     style Entra fill:#00a4ef,stroke:#333,stroke-width:1px,color:#fff
     style PS fill:#5391FE,stroke:#333,stroke-width:1px,color:#fff
 
-## 👤 Autor
 
-**Enes Can**  
-*IT-Systemtechniker & Cloud Administrator (AZ-900 certified)*
