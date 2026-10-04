@@ -28,6 +28,40 @@ Ein serverloses Cloud Asset Management Dashboard zur zentralen Erfassung und Vis
 
 ---
 
+
+## 📐 Cloud Systemarchitektur
+
+```mermaid
+graph TD
+    %% Node Definitions
+    User(["👤 User / Client"])
+    Admin(["💻 Administrator / Script"])
+    SWA["🌐 Azure Static Web Apps\n(Frontend Dashboard)"]
+    Func["⚡ Azure Functions\n(Serverless REST API)"]
+    Actions["⚙️ GitHub Actions\n(CI/CD Pipeline)"]
+    PS["📜 PowerShell Automation\n(Get-AzureInventory.ps1)"]
+    Entra["🔒 Microsoft Entra ID\n(RBAC & Security)"]
+
+    %% Data Flow Connections
+    User -->|HTTPS GET| SWA
+    SWA -->|Fetch API / GetAssets| Func
+    Admin -->|Executes| PS
+    PS -->|REST API Request| Func
+    Func -.->|Access Control| Entra
+
+    %% CI/CD Subgraph
+    subgraph DevOps ["🚀 DevOps & Deployment"]
+        Repo["🐙 GitHub Repository"] -->|Trigger Workflow| Actions
+        Actions -->|Auto Build & Deploy| SWA
+    end
+
+    %% Styling
+    style SWA fill:#0078D4,stroke:#333,stroke-width:1px,color:#fff
+    style Func fill:#0078D4,stroke:#333,stroke-width:1px,color:#fff
+    style Actions fill:#2088FF,stroke:#333,stroke-width:1px,color:#fff
+    style Entra fill:#00a4ef,stroke:#333,stroke-width:1px,color:#fff
+    style PS fill:#5391FE,stroke:#333,stroke-width:1px,color:#fff
+
 ## 👤 Autor
 
 **Enes Can**  
