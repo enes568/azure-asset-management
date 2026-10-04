@@ -27,7 +27,10 @@ Ein serverloses Cloud Asset Management Dashboard zur zentralen Erfassung und Vis
 - **Zertifizierungen:** Microsoft Certified: Azure Fundamentals (AZ-900) | AZ-104 in Vorbereitung
 
 ---
+## 👤 Autor
 
+**Enes Can**  
+*IT-Systemtechniker & Cloud Administrator (AZ-900 certified)*
 
 ## 📐 Cloud Systemarchitektur
 
