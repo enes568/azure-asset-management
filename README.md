@@ -27,6 +27,16 @@ Ein serverloses Cloud Asset Management Dashboard zur zentralen Erfassung und Vis
 - **Zertifizierungen:** Microsoft Certified: Azure Fundamentals (AZ-900) | AZ-104 in Vorbereitung
 
 ---
+
+## ⚡ Cold-Start & Resilience Handling
+Da Azure Functions im Consumption-Plan bei Inaktivität in den Schlafmodus wechseln ("Cold Start"), wurde im Frontend eine automatische Exponential-Backoff & Retry-Logik implementiert. Dies stellt sicher, dass API-Anfragen zuverlässig abgearbeitet werden und der Ladestatus dem Benutzer transparent angezeigt wird.
+
+## 🛠 Local Setup & Testing
+1. Repository klonen: `git clone https://github.com/enes568/azure-asset-management.git`
+2. PowerShell-Skript zur API-Abfrage im Ordner `/scripts` ausführen: `.\scripts\Get-AzureInventory.ps1`
+   
+---
+
 ## 👤 Autor
 
 **Enes Can**  
