@@ -262,7 +262,7 @@
         </div>
     </div>
 
-  <script>
+ <script>
     let allAssets = [];
 
     async function loadAssets() {
@@ -271,51 +271,43 @@
         
         if (loadingEl) loadingEl.style.display = 'block';
 
-        const apiUrl = 'https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets';
+        // 1. Relativer Aufruf (Azure Static Web Apps Standard)
+        // 2. Direkter Fallback auf die Azure Function URL
+        const endpoints = [
+            '/api/GetAssets',
+            'https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets'
+        ];
 
-        // Wir versuchen es bis zu 4 Mal mit echten Pausen
-        for (let attempt = 1; attempt <= 4; attempt++) {
+        for (const url of endpoints) {
             try {
-                console.log(`Ladeversuch ${attempt} gestartet...`);
-                
-                const response = await fetch(apiUrl, { method: 'GET' });
-                
-                if (!response.ok) {
-                    throw new Error(`Server antwortete mit Status ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log("Daten erfolgreich empfangen:", data);
+                console.log("Versuche Daten zu laden von:", url);
+                const response = await fetch(url);
 
-                allAssets = Array.isArray(data) ? data : [];
-                
-                // Daten rendern
-                renderTable(allAssets);
-                
-                // Erst JETZT, wo Daten da sind, Ladeanzeige ausblenden!
-                if (loadingEl) loadingEl.style.display = 'none';
-                return; // Erfolgreich abgearbeitet, Funktion beenden
-                
-            } catch (error) {
-                console.error(`Versuch ${attempt} fehlgeschlagen:`, error);
-                
-                if (attempt < 4) {
-                    // Genau 1,5 Sekunden warten vor dem nächsten Versuch
-                    await new Promise(resolve => setTimeout(resolve, 1500));
-                } else {
-                    // Wenn nach 4 Versuchen immer noch nichts geht
+                if (response.ok) {
+                    const data = await response.json();
+                    allAssets = Array.isArray(data) ? data : [];
+                    
+                    console.log("Daten erfolgreich geladen!", allAssets);
+                    renderTable(allAssets);
+                    
                     if (loadingEl) loadingEl.style.display = 'none';
-                    if (tableBody) {
-                        tableBody.innerHTML = `
-                            <tr>
-                                <td colspan="3" style="color: #ef4444; text-align: center; padding: 20px;">
-                                    <strong>Backend nicht erreichbar.</strong><br>
-                                    Bitte prüfe, ob die Azure Function läuft oder lade die Seite neu.
-                                </td>
-                            </tr>`;
-                    }
+                    return; // Erfolgreich! Beenden.
                 }
+            } catch (err) {
+                console.warn(`Aufruf an ${url} fehlgeschlagen:`, err);
             }
+        }
+
+        // Wenn beide Wege fehlschlagen:
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (tableBody) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" style="color: #ef4444; text-align: center; padding: 20px;">
+                        Verbindung zur Azure API fehlgeschlagen.<br>
+                        <small>Bitte prüfe die CORS-Einstellungen im Azure Portal.</small>
+                    </td>
+                </tr>`;
         }
     }
 
@@ -326,7 +318,7 @@
         if (totalCount) totalCount.innerText = assets.length;
         if (!tableBody) return;
 
-        if (assets.length === 0) {
+        if (!assets || assets.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px;">Keine Assets gefunden.</td></tr>';
             return;
         }
