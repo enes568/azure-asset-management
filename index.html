@@ -25,7 +25,7 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-primary);
-            padding: 40px 20px;
+            padding: 20px 15px;
             display: flex;
             justify-content: center;
         }
@@ -39,17 +39,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .header-title {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .header-title h1 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
         }
 
@@ -67,7 +70,7 @@
             background: rgba(34, 197, 94, 0.1);
             color: var(--accent-green);
             border: 1px solid var(--border-color);
-            padding: 6px 16px;
+            padding: 6px 14px;
             border-radius: 8px;
             font-size: 13px;
             display: flex;
@@ -77,16 +80,16 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 20px;
+            padding: 16px;
         }
 
         .card-label {
@@ -99,14 +102,14 @@
         }
 
         .card-value {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
         }
 
         .controls {
             display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .search-input {
@@ -118,6 +121,7 @@
             color: var(--text-primary);
             font-size: 14px;
             outline: none;
+            width: 100%;
         }
 
         .search-input:focus {
@@ -129,21 +133,24 @@
             color: #000;
             border: none;
             border-radius: 8px;
-            padding: 12px 24px;
+            padding: 12px 20px;
             font-weight: 600;
             cursor: pointer;
             transition: opacity 0.2s;
+            white-space: nowrap;
         }
 
         .btn-refresh:hover {
             opacity: 0.9;
         }
 
+        /* Responsive Container für die Tabelle */
         .table-container {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            overflow: hidden;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
@@ -151,6 +158,7 @@
             border-collapse: collapse;
             text-align: left;
             font-size: 14px;
+            min-width: 600px; /* Erzeugt sauberes Scrollen auf kleinen Bildschirmen */
         }
 
         th {
@@ -159,12 +167,12 @@
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            padding: 16px 20px;
+            padding: 14px 16px;
             border-bottom: 1px solid var(--border-color);
         }
 
         td {
-            padding: 16px 20px;
+            padding: 14px 16px;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -188,6 +196,42 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            font-size: 14px;
+        }
+
+        /* Mobile Anpassungen */
+        @media (max-width: 640px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .status-badge {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn-refresh {
+                width: 100%;
+            }
+
+            .grid {
+                grid-template-columns: 1fr 1fr; /* 2 Spalten auf dem Handy */
+            }
+        }
+
+        @media (max-width: 400px) {
+            .grid {
+                grid-template-columns: 1fr; /* 1 Spalte bei sehr kleinen Handys */
+            }
         }
     </style>
 </head>
@@ -269,9 +313,7 @@
                 const data = await response.json();
                 allAssets = data;
                 
-                // Zähler aktualisieren sobald Daten da sind
                 if (totalCount) totalCount.innerText = data.length;
-                
                 renderTable(data);
 
                 if (loadingEl) loadingEl.style.display = 'none';
