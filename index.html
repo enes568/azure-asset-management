@@ -262,46 +262,55 @@
         </div>
     </div>
 
-   <script>
+  <script>
     let allAssets = [];
 
-    async function loadAssets(retries = 3, delay = 1000) {
+    async function loadAssets() {
         const loadingEl = document.getElementById('loading');
         const tableBody = document.getElementById('tableBody');
         
-        // Stellt sicher, dass die Meldung beim Start sichtbar ist
-        if (loadingEl) {
-            loadingEl.style.display = 'block';
-        }
+        if (loadingEl) loadingEl.style.display = 'block';
 
-        for (let i = 0; i < retries; i++) {
+        const apiUrl = 'https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets';
+
+        // Wir versuchen es bis zu 4 Mal mit echten Pausen
+        for (let attempt = 1; attempt <= 4; attempt++) {
             try {
-                const response = await fetch('https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets');
+                console.log(`Ladeversuch ${attempt} gestartet...`);
+                
+                const response = await fetch(apiUrl, { method: 'GET' });
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
+                    throw new Error(`Server antwortete mit Status ${response.status}`);
                 }
                 
-                allAssets = await response.json();
+                const data = await response.json();
+                console.log("Daten erfolgreich empfangen:", data);
+
+                allAssets = Array.isArray(data) ? data : [];
                 
-                // Daten erfolgreich da -> Tabelle befüllen & Ladeanzeige ausblenden
-                renderTable(allAssets); 
+                // Daten rendern
+                renderTable(allAssets);
+                
+                // Erst JETZT, wo Daten da sind, Ladeanzeige ausblenden!
                 if (loadingEl) loadingEl.style.display = 'none';
-                return;
+                return; // Erfolgreich abgearbeitet, Funktion beenden
                 
             } catch (error) {
-                console.warn(`Versuch ${i + 1} fehlgeschlagen. Backend wacht auf... Erneuter Versuch in ${delay}ms.`);
+                console.error(`Versuch ${attempt} fehlgeschlagen:`, error);
                 
-                if (i < retries - 1) {
-                    await new Promise(resolve => setTimeout(resolve, delay));
+                if (attempt < 4) {
+                    // Genau 1,5 Sekunden warten vor dem nächsten Versuch
+                    await new Promise(resolve => setTimeout(resolve, 1500));
                 } else {
-                    // Erst nach allen gescheiterten Versuchen Ladeanzeige verstecken & Fehler zeigen
+                    // Wenn nach 4 Versuchen immer noch nichts geht
                     if (loadingEl) loadingEl.style.display = 'none';
                     if (tableBody) {
                         tableBody.innerHTML = `
                             <tr>
                                 <td colspan="3" style="color: #ef4444; text-align: center; padding: 20px;">
-                                    Fehler beim Laden der Daten aus Azure. Bitte Seite neu laden.
+                                    <strong>Backend nicht erreichbar.</strong><br>
+                                    Bitte prüfe, ob die Azure Function läuft oder lade die Seite neu.
                                 </td>
                             </tr>`;
                     }
@@ -325,7 +334,7 @@
         tableBody.innerHTML = assets.map(asset => `
             <tr>
                 <td><code>${asset.id || asset.resourceId || 'N/A'}</code></td>
-                <td><strong>${asset.name || asset.assetName}</strong></td>
+                <td><strong>${asset.name || asset.assetName || 'Unbenannt'}</strong></td>
                 <td><span class="badge">${asset.category || asset.kategorie || 'Azure Resource'}</span></td>
             </tr>
         `).join('');
