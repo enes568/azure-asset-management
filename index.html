@@ -268,43 +268,37 @@
     async function loadAssets() {
         const loadingEl = document.getElementById('loading');
         const tableBody = document.getElementById('tableBody');
+        const totalCount = document.getElementById('totalCount');
         
         if (loadingEl) loadingEl.style.display = 'block';
 
-        const apiUrl = 'https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets';
-
         try {
-            const response = await fetch(apiUrl);
+            const response = await fetch('https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets');
+            const data = await response.json();
             
-            if (!response.ok) {
-                throw new Error(`HTTP Error: ${response.status}`);
-            }
+            allAssets = data;
             
-            allAssets = await response.json();
+            if (totalCount) totalCount.innerText = data.length;
             
-           
-            renderTable(allAssets); 
-            
-            if (loadingEl) loadingEl.style.display = 'none';
+            renderTable(data);
 
         } catch (error) {
-            console.error("Fehler beim Laden:", error);
-            
-            if (loadingEl) loadingEl.style.display = 'none';
+            console.error('Fehler beim Laden der Assets:', error);
             if (tableBody) {
                 tableBody.innerHTML = `
                     <tr>
                         <td colspan="4" style="color: #ef4444; text-align: center; padding: 20px;">
-                            Fehler beim Laden der Daten aus Azure. Bitte später erneut versuchen.
+                            Fehler beim Laden der Daten aus Azure.
                         </td>
                     </tr>`;
             }
+        } finally {
+            if (loadingEl) loadingEl.style.display = 'none';
         }
     }
 
     function renderTable(assets) {
         const tableBody = document.getElementById('tableBody');
-        
         if (!tableBody) return;
 
         if (!assets || assets.length === 0) {
@@ -312,19 +306,18 @@
             return;
         }
 
-        
         tableBody.innerHTML = assets.map(asset => `
             <tr>
                 <td><code>${asset.id || asset.resourceId || 'N/A'}</code></td>
                 <td><strong>${asset.name || asset.assetName || 'Unbenannt'}</strong></td>
                 <td><span class="badge">${asset.category || asset.kategorie || 'Azure Resource'}</span></td>
-                <td><span style="color: #22c55e; font-weight: 600;">● ${asset.status || 'Active'}</span></td>
+                <td><span style="color: #22c55e; font-weight: 600;">● Active</span></td>
             </tr>
         `).join('');
     }
 
     function filterAssets() {
-        const searchInput = document.getElementById('searchInput') || document.querySelector('input[type="text"]');
+        const searchInput = document.getElementById('searchInput');
         if (!searchInput) return;
         
         const searchTerm = searchInput.value.toLowerCase();
@@ -340,14 +333,12 @@
     document.addEventListener('DOMContentLoaded', () => {
         loadAssets();
         
-       
-        const searchInput = document.getElementById('searchInput') || document.querySelector('input[type="text"]');
+        const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('input', filterAssets);
         }
 
-      
-        const refreshBtn = document.querySelector('button') || document.getElementById('refreshBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
         if (refreshBtn) {
             refreshBtn.addEventListener('click', loadAssets);
         }
