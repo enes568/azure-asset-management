@@ -262,7 +262,7 @@
         </div>
     </div>
 
- <script>
+<script>
     let allAssets = [];
 
     async function loadAssets() {
@@ -271,69 +271,60 @@
         
         if (loadingEl) loadingEl.style.display = 'block';
 
-        // 1. Relativer Aufruf (Azure Static Web Apps Standard)
-        // 2. Direkter Fallback auf die Azure Function URL
-        const endpoints = [
-            '/api/GetAssets',
-            'https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets'
-        ];
+        const apiUrl = 'https://func-demo-api-ec-fkfrbxd8aah2dthq.austriaeast-01.azurewebsites.net/api/GetAssets';
 
-        for (const url of endpoints) {
-            try {
-                console.log("Versuche Daten zu laden von:", url);
-                const response = await fetch(url);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    allAssets = Array.isArray(data) ? data : [];
-                    
-                    console.log("Daten erfolgreich geladen!", allAssets);
-                    renderTable(allAssets);
-                    
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    return; // Erfolgreich! Beenden.
-                }
-            } catch (err) {
-                console.warn(`Aufruf an ${url} fehlgeschlagen:`, err);
+        try {
+            const response = await fetch(apiUrl);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status}`);
             }
-        }
+            
+            allAssets = await response.json();
+            
+           
+            renderTable(allAssets); 
+            
+            if (loadingEl) loadingEl.style.display = 'none';
 
-        // Wenn beide Wege fehlschlagen:
-        if (loadingEl) loadingEl.style.display = 'none';
-        if (tableBody) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="3" style="color: #ef4444; text-align: center; padding: 20px;">
-                        Verbindung zur Azure API fehlgeschlagen.<br>
-                        <small>Bitte prüfe die CORS-Einstellungen im Azure Portal.</small>
-                    </td>
-                </tr>`;
+        } catch (error) {
+            console.error("Fehler beim Laden:", error);
+            
+            if (loadingEl) loadingEl.style.display = 'none';
+            if (tableBody) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="color: #ef4444; text-align: center; padding: 20px;">
+                            Fehler beim Laden der Daten aus Azure. Bitte später erneut versuchen.
+                        </td>
+                    </tr>`;
+            }
         }
     }
 
     function renderTable(assets) {
         const tableBody = document.getElementById('tableBody');
-        const totalCount = document.getElementById('totalCount');
         
-        if (totalCount) totalCount.innerText = assets.length;
         if (!tableBody) return;
 
         if (!assets || assets.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px;">Keine Assets gefunden.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Keine Assets gefunden.</td></tr>';
             return;
         }
 
+        
         tableBody.innerHTML = assets.map(asset => `
             <tr>
                 <td><code>${asset.id || asset.resourceId || 'N/A'}</code></td>
                 <td><strong>${asset.name || asset.assetName || 'Unbenannt'}</strong></td>
                 <td><span class="badge">${asset.category || asset.kategorie || 'Azure Resource'}</span></td>
+                <td><span style="color: #22c55e; font-weight: 600;">● ${asset.status || 'Active'}</span></td>
             </tr>
         `).join('');
     }
 
     function filterAssets() {
-        const searchInput = document.getElementById('searchInput');
+        const searchInput = document.getElementById('searchInput') || document.querySelector('input[type="text"]');
         if (!searchInput) return;
         
         const searchTerm = searchInput.value.toLowerCase();
@@ -349,9 +340,16 @@
     document.addEventListener('DOMContentLoaded', () => {
         loadAssets();
         
-        const searchInput = document.getElementById('searchInput');
+       
+        const searchInput = document.getElementById('searchInput') || document.querySelector('input[type="text"]');
         if (searchInput) {
             searchInput.addEventListener('input', filterAssets);
+        }
+
+      
+        const refreshBtn = document.querySelector('button') || document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', loadAssets);
         }
     });
 </script>
