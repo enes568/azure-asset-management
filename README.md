@@ -1,4 +1,4 @@
-# ☁️ Azure Cloud Asset Management & Dashboard
+# ☁️️ Azure Cloud Asset Management & Dashboard
 
 [![Azure Static Web Apps](https://img.shields.io/badge/Azure-Static_Web_Apps-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com/)
 [![Azure Functions](https://img.shields.io/badge/Azure-Functions_Serverless-0078D4?style=for-the-badge&logo=azurefunctions&logoColor=white)](https://azure.microsoft.com/)
@@ -29,19 +29,24 @@ Ein serverloses Cloud Asset Management Dashboard zur zentralen Erfassung und Vis
 ---
 
 ## ⚡ Cold-Start & Resilience Handling
-   Da Azure Functions im Consumption-Plan bei Inaktivität in den Schlafmodus wechseln ("Cold Start"), wurde im Frontend eine automatische Exponential-Backoff & Retry-Logik implementiert. Dies stellt sicher, dass API-Anfragen zuverlässig        abgearbeitet werden und der Ladestatus dem Benutzer transparent angezeigt wird.
+
+Da Azure Functions im Consumption-Plan bei Inaktivität in den Schlafmodus wechseln ("Cold Start"), wurde im Frontend eine automatische Exponential-Backoff & Retry-Logik implementiert. Dies stellt sicher, dass API-Anfragen zuverlässig abgearbeitet werden und der Ladestatus dem Benutzer transparent angezeigt wird.
+
 ---
 
-## 🛠 Local Setup & Testing
+## 🛠️ Local Setup & Testing
+
 1. Repository klonen: `git clone https://github.com/enes568/azure-asset-management.git`
 2. PowerShell-Skript zur API-Abfrage im Ordner `/scripts` ausführen: `.\scripts\Get-AzureInventory.ps1`
-   
+
 ---
 
 ## 👤 Autor
 
 **Enes Can**  
 *IT-Systemtechniker & Cloud Administrator (AZ-900 certified)*
+
+---
 
 ## 📐 Cloud Systemarchitektur
 
@@ -75,5 +80,3 @@ graph TD
     style Actions fill:#2088FF,stroke:#333,stroke-width:1px,color:#fff
     style Entra fill:#00a4ef,stroke:#333,stroke-width:1px,color:#fff
     style PS fill:#5391FE,stroke:#333,stroke-width:1px,color:#fff
-
-
