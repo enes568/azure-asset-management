@@ -184,6 +184,10 @@
             padding: 20px;
             text-align: center;
             color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
     </style>
 </head>
@@ -203,7 +207,7 @@
     <div class="grid">
         <div class="card">
             <div class="card-label">MANAGED ASSETS</div>
-            <div class="card-value" id="totalCount">3</div>
+            <div class="card-value" id="totalCount">0</div>
         </div>
         <div class="card">
             <div class="card-label">IDENTITY & ACCESS</div>
@@ -224,9 +228,10 @@
         <button id="refreshBtn" class="btn-refresh">Daten aktualisieren</button>
     </div>
 
-    <div id="loading" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-    <span style="color: #f59e0b; font-size: 18px;">⚡</span> Einen Moment Geduld... Daten werden aus Azure geladen.
-</div>
+    <div class="table-container">
+        <div id="loading">
+            <span style="color: #f59e0b; font-size: 18px;">⚡</span> Einen Moment Geduld... Daten werden aus Azure geladen.
+        </div>
         <table>
             <thead>
                 <tr>
@@ -251,7 +256,7 @@
         const tableBody = document.getElementById('tableBody');
         const totalCount = document.getElementById('totalCount');
         
-        if (loadingEl) loadingEl.style.display = 'block';
+        if (loadingEl) loadingEl.style.display = 'flex';
 
         for (let i = 0; i < retries; i++) {
             try {
@@ -264,11 +269,11 @@
                 const data = await response.json();
                 allAssets = data;
                 
+                // Zähler aktualisieren sobald Daten da sind
                 if (totalCount) totalCount.innerText = data.length;
                 
                 renderTable(data);
 
-                // Erfolgreich geladen -> Ladeanzeige ausblenden & beenden
                 if (loadingEl) loadingEl.style.display = 'none';
                 return;
 
@@ -276,10 +281,9 @@
                 console.warn(`Versuch ${i + 1} von ${retries} fehlgeschlagen. Cold Start wird abgewartet...`);
                 
                 if (i < retries - 1) {
-                    // Warten vor dem nächsten Retry
                     await new Promise(resolve => setTimeout(resolve, delay));
                 } else {
-                    // Erst nach allen Versuchen Fehlermeldung zeigen
+                    if (totalCount) totalCount.innerText = '0';
                     if (loadingEl) loadingEl.style.display = 'none';
                     if (tableBody) {
                         tableBody.innerHTML = `
@@ -306,7 +310,6 @@
         tableBody.innerHTML = assets.map(asset => {
             const assetName = asset.name || asset.assetName || 'Unbenannt';
             
-            // Falls der Asset Name "Windows Server" enthält -> STATUS "Running", sonst "Active"
             let statusText = asset.status || 'Active';
             if (assetName.toLowerCase().includes('windows server')) {
                 statusText = 'Running';
