@@ -140,7 +140,7 @@ function normalize(raw) {
 
 function statusClass(status) {
   const s = status.toLowerCase();
-  if (/(active|running|online|healthy|ok)/.test(s)) return 'ok';
+  if (/(active|running|online|healthy|succeeded|ok)/.test(s)) return 'ok';
   if (/(stopped|failed|error|offline|deleted)/.test(s)) return 'bad';
   return 'warn';
 }
