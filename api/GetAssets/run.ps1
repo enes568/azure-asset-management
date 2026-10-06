@@ -2,12 +2,10 @@ using namespace System.Net
 
 param($Request, $TriggerMetadata)
 
-# Resource Graph ist kostenlos, wird aber pro Benutzer gedrosselt.
-# Darum wird das Ergebnis kurz zwischengespeichert.
+
 $cacheSeconds = 60
 
-# Optional: Typen, die nicht öffentlich erscheinen sollen, als App-Einstellung, z. B.
-# EXCLUDE_TYPES=microsoft.keyvault/vaults,microsoft.sql/servers
+
 $excluded = @(($env:EXCLUDE_TYPES -split ',') | ForEach-Object { $_.Trim().ToLower() } | Where-Object { $_ })
 
 $typeLabels = @{
@@ -57,7 +55,10 @@ function Get-Assets {
     $query = @"
 resources
 | where resourceGroup =~ '$resourceGroup'
-| project id, name, type, kind, state = tostring(properties.provisioningState)
+| where not(type =~ 'microsoft.sql/servers/databases' and name =~ 'master')
+| extend runtimeState = tostring(properties.state), dbStatus = tostring(properties.status), provState = tostring(properties.provisioningState), isEnabled = tostring(properties.enabled)
+| extend state = case(isnotempty(runtimeState), runtimeState, isnotempty(dbStatus), dbStatus, isEnabled =~ 'true', 'Active', isEnabled =~ 'false', 'Disabled', isnotempty(provState), provState, 'Unknown')
+| project id, name, type, kind, state
 | order by name asc
 "@
 
@@ -91,7 +92,7 @@ try {
 
     if (-not $global:AssetCacheJson -or $age -gt $cacheSeconds) {
         $assets = @(Get-Assets)
-        $global:AssetCacheJson = ConvertTo-Json -InputObject $assets -Depth 4 -AsArray
+        $global:AssetCacheJson = ConvertTo-Json -InputObject $assets -Depth 4
         $global:AssetCacheTime = Get-Date
     }
 
