@@ -1,0 +1,20 @@
+# Azure Functions / Node
+node_modules/
+local.settings.json
+.azure/
+__azurite__/
+__blobstorage__/
+__queuestorage__/
+
+# Geheimnisse
+.env
+.env.*
+*.pfx
+*.pem
+
+# Lokale Dateien
+*.log
+*.csv
+.vscode/
+.DS_Store
+Thumbs.db
