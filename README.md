@@ -10,6 +10,8 @@ Ein serverloses Dashboard, das die Azure-Ressourcen einer Ressourcengruppe live 
 
 > Beim ersten Aufruf kann es einige Sekunden dauern, weil die Function aus dem Leerlauf startet (Cold Start).
 
+![Dashboard mit den Ressourcen aus Azure](docs/images/dashboard.png)
+
 ---
 
 ## 🏗️ Architektur & Komponenten
@@ -31,6 +33,7 @@ Ein serverloses Dashboard, das die Azure-Ressourcen einer Ressourcengruppe live 
 
 Die einzelnen Schritte stehen in [`docs/RBAC-SETUP.md`](docs/RBAC-SETUP.md).
 
+![Rollenzuweisung: Managed Identity mit Reader nur auf der Ressourcengruppe](docs/images/rollenzuweisung.png)
 ---
 
 ## 🛠️ Verwendete Technologien
