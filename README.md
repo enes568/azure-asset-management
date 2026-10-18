@@ -40,7 +40,7 @@ Die einzelnen Schritte stehen in [`docs/RBAC-SETUP.md`](docs/RBAC-SETUP.md).
 
 - **Cloud & Identity:** Microsoft Azure (Static Web Apps, Functions, Resource Graph, Managed Identity, Entra ID, RBAC)
 - **Programmierung & Automatisierung:** PowerShell (Function und Skripte), JavaScript (async/await), HTML5/CSS3, KQL
-- **DevOps:** GitHub Actions (OIDC), Git
+- **DevOps:** GitHub Actions (OIDC), Bicep (Infrastructure as Code), Git
 - **Zertifizierungen:** Microsoft Certified: Azure Fundamentals (AZ-900) | AZ-104 in Vorbereitung
 
 ---
@@ -58,9 +58,24 @@ Azure Functions im Verbrauchsplan werden bei Inaktivität heruntergefahren. Das 
 api/GetAssets/       Azure Function (PowerShell)
 scripts/             PowerShell-Skript zur API-Abfrage
 docs/                Einrichtung von Managed Identity, Reader-Rolle und OIDC
+infra/               Bicep: Function App, Managed Identity, Rollenzuweisung
 index.html           Dashboard (Frontend)
 staticwebapp.config.json
 ```
+
+---
+
+## 🧱 Infrastructure as Code (Bicep)
+
+Das Backend ist als Bicep-Vorlage in [`infra/`](infra/) beschrieben: Function App (PowerShell) mit Managed Identity, Speicher, Application Insights und die Rolle *Reader* auf die Ressourcengruppe. Ich habe die Vorlage in einer separaten Test-Ressourcengruppe mit `what-if` geprüft und deployt.
+
+```bash
+az group create -n rg-bicep-test -l austriaeast
+az deployment group what-if -g rg-bicep-test -f infra/main.bicep -p infra/main.bicepparam
+az deployment group create  -g rg-bicep-test -f infra/main.bicep -p infra/main.bicepparam
+```
+
+Zum Aufräumen: `az group delete -n rg-bicep-test --yes`
 
 ---
 
@@ -76,7 +91,7 @@ staticwebapp.config.json
 
 - Das Dashboard ist öffentlich und nur lesend. Eine Benutzeranmeldung mit eigenem Entra-ID-Login wäre in Static Web Apps nur im kostenpflichtigen Standard-Plan möglich.
 - Als Status steht der Laufzustand bzw. der `provisioningState` der Ressource, nicht jede Ressource liefert einen.
-- Geplant: die Ressourcen als Infrastructure as Code (Bicep) beschreiben.
+- Das Backend (Function App, Managed Identity, Reader-Rolle) ist als Bicep-Vorlage in `infra/` beschrieben. Frontend, Key Vault und SQL sind darin nicht enthalten. Die laufende Umgebung wurde von Hand angelegt.
 
 ---
 
